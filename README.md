@@ -1,5 +1,6 @@
 # Ai_Chatbot
 AI-Powered Chatbot for Supplier and Product Information
+
 This project is an AI-powered chatbot that allows users to query a product and supplier database using natural language. The chatbot interacts with a MySQL database to fetch relevant information and uses an open-source LLM (GPT-2) for summarizing supplier data. The system consists of:
 A React frontend for user interaction.
 A FastAPI backend for handling queries and interacting with the database.
