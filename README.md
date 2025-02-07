@@ -10,6 +10,14 @@ The chatbot can handle queries like:
 "Which suppliers provide laptops?"
 "Give me details of product ABC."
 
+Prerequisites:
+Setting up the environment:
+
+python -m venv venv
+source venv/bin/activate  # On Mac/Linux
+venv\Scripts\activate  # On Windows
+pip install -r requirements.txt
+
 Tools and Technologies Used
 Frontend
 React: JavaScript library for building the user interface.
@@ -19,7 +27,6 @@ Axios: For making HTTP requests to the backend.
 Backend
 FastAPI: Python framework for building the backend API.
 SQLAlchemy: ORM for interacting with the MySQL database.
-LangGraph: For creating and managing chatbot workflows.
 Hugging Face Transformers: For using the GPT-2 model for summarization.
 
 Database
@@ -29,4 +36,5 @@ Other Tools
 PyMySQL: MySQL driver for Python.
 
 CORS Middleware: For enabling cross-origin requests between the frontend and backend.
+
 
