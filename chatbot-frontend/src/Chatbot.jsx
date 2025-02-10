@@ -1,95 +1,70 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { 
-  Container, TextField, Button, List, ListItem, Typography, Paper, Stack 
-} from "@mui/material";
+import { Container, TextField, Button, List, ListItem, Typography, Box } from "@mui/material";
+import { lightGreen } from "@mui/material/colors";
 
 const Chatbot = () => {
-  const [query, setQuery] = useState("");  // User input state
-  const [history, setHistory] = useState([]);  // Chat history state
-  const [loading, setLoading] = useState(false);  // Loading state
-  const [error, setError] = useState(null);  // Error state
+  const [query, setQuery] = useState("");
+  const [history, setHistory] = useState([]);
 
-  // Handle form submission
-  const handleSubmit = async (e) => {
-    e.preventDefault(); // Prevent page refresh
-    if (!query.trim()) return; // Ignore empty queries
-
-    setLoading(true);
-    setError(null); // Reset error state
-
+  const handleQuery = async () => {
     try {
-      const response = await axios.post("http://localhost:8000/query", { query });
-      setHistory([...history, { query, response: response.data.response }]); // Update chat history
-      setQuery(""); // Clear input after submission
+      const response = await axios.post("http://127.0.0.1:8000/query", { query });
+      const botResponse = response.data.response;
+
+      setHistory([...history, { query, response: botResponse }]);
     } catch (error) {
       console.error("Error fetching data:", error);
-      setError("Failed to connect to chatbot. Please try again.");
-    } finally {
-      setLoading(false);
     }
   };
 
   return (
-    <Container maxWidth="sm">
-      <Typography variant="h4" gutterBottom align="center">AI Powered Chatbot</Typography>
+    <Container>
+      <Typography variant="h4" gutterBottom>AI-Powered Chatbot</Typography>
 
-      {/* Form Submission */}
-      <form onSubmit={handleSubmit} style={{ marginBottom: "20px" }}>
-        <TextField
-          fullWidth
-          label="Type your query..."
-          variant="outlined"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-        />
-        <Button 
-          type="submit" 
-          variant="contained" 
-          style={{ marginTop: "10px" }} 
-          disabled={loading}
-        >
-          {loading ? "Loading..." : "Sumbit"}
-        </Button>
-      </form>
+      <TextField
+        fullWidth
+        label="Type your query..."
+        value={query}
+        onChange={(e) => setQuery(e.target.value)}
+        variant="outlined"
+        sx={{ marginBottom: 2 }}
+      />
 
-      {/* Error Message */}
-      {error && <Typography color="error">{error}</Typography>}
+      <Button 
+        variant="contained" 
+        onClick={handleQuery} 
+        sx={{ backgroundColor: "#6200ea", color: "white", marginBottom: 2 }}
+      >
+        Submit
+      </Button>
 
-      {/* Chat History */}
       <List>
         {history.map((item, index) => (
-          <Stack key={index} spacing={1}>
+          <ListItem key={index} sx={{ flexDirection: "column", alignItems: "flex-start" }}>
+              <Box sx={{ backgroundColor: "lightGreen", padding: 2, borderRadius: 2, marginTop: 1, width: "100%" }}>
+            <Typography variant="body1" sx={{  fontWeight: "bold", color: "blue" }}>
+              You: </Typography> {item.query}
+           </Box>
 
-            {/* User Message */}
-            <ListItem>
-              <Paper 
-                style={{
-                  padding: "10px",
-                  backgroundColor: "lightgreen", 
-                  width: "fit-content",
-                  maxWidth: "80%"
-                }}
-              >
-                <Typography variant="body1"><strong>You:</strong> {item.query}</Typography>
-              </Paper>
-            </ListItem>
-
-            {/* Bot Response */}
-            <ListItem>
-              <Paper 
-                style={{
-                  padding: "10px",
-                  backgroundColor: "lightyellow", 
-                  width: "fit-content",
-                  maxWidth: "80%"
-                }}
-              >
-                <Typography variant="body1"><strong>Bot:</strong> {item.response}</Typography>
-              </Paper>
-            </ListItem>
-
-          </Stack>
+            {/* Bot response styling */}
+            <Box sx={{ backgroundColor: "#e3f2fd", padding: 2, borderRadius: 2, marginTop: 1, width: "100%" }}>
+              <Typography variant="body1" sx={{ fontWeight: "bold", color: "#d32f2f" }}>
+                Bot:
+              </Typography>
+              {Array.isArray(item.response) ? (
+                <ul style={{ margin: 0, paddingLeft: 20 }}>
+                  {item.response.map((product, i) => (
+                    <li key={i} style={{ color: "#004d40" }}>
+                      <strong>{product.name}</strong> - {product.brand} - ${product.price} ({product.category})
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <Typography sx={{ color: "#2e7d32" }}>{item.response}</Typography>
+              )}
+            </Box>
+          </ListItem>
         ))}
       </List>
     </Container>
